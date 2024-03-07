@@ -46,9 +46,9 @@ void Decayfit(TH1 *hist,double lower, double upper)
   decay->SetParName(2, "Daughter lambda");
   decay->SetParName(3, "bkground");
   decay->SetParameters(500, 5.2511150042*1e-8,8.0598509367*1e-9,1400);
-  decay->SetParLimits(0, 0, 100000);
-  decay->SetParLimits(1, 0, .1);
-  decay->SetParLimits(2, 8.0598509367*1e-9,8.0598509367*1e-9);
+  // decay->SetParLimits(0, 0, 100000);
+  // decay->SetParLimits(1, 0, .1);
+  //decay->SetParLimits(2, 8.0598509367*1e-9,8.0598509367*1e-9);
   // decay->SetParLimits(3, 0, 4800);
   // hist->GetListOfFunctions()->Add(decay);
   hist->Fit(decay, "+", "", lower, upper);

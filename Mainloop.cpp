@@ -14,6 +14,7 @@ Nov 8, 2023
 #include <sstream>
 #include <vector>
 
+#include "TCanvas.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TH1D.h"
@@ -159,8 +160,8 @@ struct det
           cuts[ID]->AddPoint(x, y);
         }
         hcuts[ID] = new TH2D(cut_names[ID], "2D histogram cut", 500, -150.0, -50.0, 500, 0.0, 6000);
-        YSOlcut[ID] = new TH2D(cut_names[ID] + "YSOhigh", "3D histogram of the low gain YSO Surface and energy", 4096, 0.0, 1.0, 4096, 0.0, 1.0);
-        tdifflh[ID] = new TH1D(cut_names[ID] + "tdifflh", "1d histo of the difference between high gain and low gain points", 200, -(decaytime), decaytime);
+        YSOlcut[ID] = new TH2D(cut_names[ID] + "_YSOhigh", "3D histogram of the low gain YSO Surface and energy", 4096, 0.0, 1.0, 4096, 0.0, 1.0);
+        tdifflh[ID] = new TH1D(cut_names[ID] + "_tdifflh", "1d histo of the difference between high gain and low gain points", 200, -(decaytime), decaytime);
 
         ncuts = ID + 1;
       }
@@ -956,8 +957,10 @@ int main(int argc, char *argv[])
       }
 
       TOF = (etime - stime); // to ns
-      if(avg_TOF.size() > 0){
-      TOFcor = TOF + (avg_TOF[0] - avg_TOF[this_run]);
+      if(avg_TOF.empty() == false){
+      TOFcor = TOF + (avg_TOF[6] - avg_TOF[this_run]);
+      // cout << "TOFcor " << TOFcor << endl;
+      // cout << "TOF " << TOF << endl;
       }
       else{
         TOFcor = TOF;
@@ -1318,16 +1321,21 @@ int main(int argc, char *argv[])
     TOFHist[t]->Write();
     printf("\rstoring TOF %i\n", t);
   }
-  // TCanvas * canvas = new TCanvas();
-  // canvas->divid(3, 3);
+  TCanvas * canvas = new TCanvas();
+  canvas->Divide(3, 1);
 
-  // canvas->cd(1);
-  // canvas->cd(1)->setLogz();
-  // //hist1->Draw();
-  // canvas->cd(2)
-  // //hist2->Draw();
+  canvas->cd(1);
+  PID100ImpBox -> Draw("colz");
+  canvas->cd(1)->GetLogz();
+  canvas->cd(2);
+  YSOlow -> Draw("colz");
+  canvas->cd(2)->GetLogz();
+  canvas->cd(3);
+  YSOhigh -> Draw("colz");
+  canvas->cd(3)->GetLogz();
 
-  // canvas->Write();
+
+  canvas->Write();
 
   GatedYSO100->Write();
   GatedYSO40->GetXaxis()->SetTitle("x and y");
